@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github-dark.min.css">
-  <link rel="stylesheet" href="/static/styles.css?v=20260915">
+  <link rel="stylesheet" href="/static/styles.css?v=20260915-2">
 </head>
 <body>
   <div id="login-screen" class="login-screen">
@@ -35,11 +35,12 @@
             <button type="button" onclick="doRegister()" class="btn btn-secondary btn-block">注册普通账号</button>
           </form>
           <section class="demo-accounts" aria-labelledby="demo-accounts-title">
-            <div class="demo-accounts-head"><span id="demo-accounts-title">演示账号</span><small>点击后自动填入，可直接登录</small></div>
+            <div class="demo-accounts-head"><span><strong id="demo-accounts-title">快速体验</strong><small>选择一个演示角色，账号和密码将自动填入</small></span><i data-lucide="sparkles"></i></div>
             <div class="demo-account-grid">
-              <button type="button" onclick="fillDemoAccount('admin')" class="demo-account-card"><span class="demo-account-icon"><i data-lucide="shield-check"></i></span><span><strong>管理员演示</strong><small>查看知识审核与系统管理</small></span><i data-lucide="arrow-up-right"></i></button>
-              <button type="button" onclick="fillDemoAccount('user')" class="demo-account-card"><span class="demo-account-icon"><i data-lucide="user-round"></i></span><span><strong>普通用户演示</strong><small>体验知识问答与会话</small></span><i data-lucide="arrow-up-right"></i></button>
+              <button type="button" data-demo-role="admin" onclick="fillDemoAccount('admin')" class="demo-account-card demo-admin"><span class="demo-account-icon"><i data-lucide="shield-check"></i></span><span class="demo-account-copy"><span class="demo-role-line"><strong>管理员演示</strong><em>完整权限</em></span><small>知识审核、Agent 观测与系统管理</small><span class="demo-credential"><i data-lucide="user"></i>admin</span></span><span class="demo-use">使用<i data-lucide="arrow-right"></i></span></button>
+              <button type="button" data-demo-role="user" onclick="fillDemoAccount('user')" class="demo-account-card demo-user"><span class="demo-account-icon"><i data-lucide="user-round"></i></span><span class="demo-account-copy"><span class="demo-role-line"><strong>普通用户演示</strong><em>问答体验</em></span><small>智能问答、来源引用与历史会话</small><span class="demo-credential"><i data-lucide="user"></i>agent</span></span><span class="demo-use">使用<i data-lucide="arrow-right"></i></span></button>
             </div>
+            <p id="demo-fill-status" class="demo-fill-status" aria-live="polite">请选择演示角色</p>
           </section>
           <div class="login-hint"><i data-lucide="info"></i><span>演示凭据仅用于本地作品展示，生产部署请立即更换。</span></div>
         </div>
@@ -94,6 +95,6 @@
   <div id="user-modal" class="modal-root hidden" aria-hidden="true"><div class="modal-backdrop" onclick="closeUserModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="user-modal-title"><div class="modal-icon"><i data-lucide="user-plus"></i></div><h2 id="user-modal-title">新增普通用户</h2><p>当前接口仅支持创建普通账号，管理员角色需要在数据库中配置。</p><form onsubmit="event.preventDefault();createUser()"><div class="form-stack"><label class="field"><span>用户名</span><input id="new-user-name" autocomplete="username" placeholder="至少 2 个字符"></label><label class="field"><span>初始密码</span><input id="new-user-pass" type="password" autocomplete="new-password" placeholder="至少 3 个字符"></label></div><div class="modal-actions"><button type="button" onclick="closeUserModal()" class="btn btn-secondary">取消</button><button id="create-user-btn" type="submit" class="btn btn-primary">创建用户</button></div></form></section></div>
   <div id="toast-region" class="toast-region" aria-live="polite"></div>
   <script src="/static/ui.js?v=20260914"></script>
-  <script src="/static/app.js?v=20260915"></script>
+  <script src="/static/app.js?v=20260915-2"></script>
 </body>
 </html>

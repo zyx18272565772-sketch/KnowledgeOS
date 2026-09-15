@@ -106,6 +106,13 @@ function fillDemoAccount(role = 'admin') {
   document.getElementById('login-user').value = account.username;
   document.getElementById('login-pass').value = account.password;
   document.getElementById('login-err').classList.add('hidden');
+  document.querySelectorAll('.demo-account-card').forEach(card => {
+    card.classList.toggle('selected', card.dataset.demoRole === role);
+  });
+  const roleName = role === 'user' ? '普通用户' : '管理员';
+  const status = document.getElementById('demo-fill-status');
+  status.textContent = `已填入${roleName}演示账号，可直接点击登录`;
+  status.classList.add('ready');
   document.getElementById('login-submit').focus();
 }
 function logout() {
