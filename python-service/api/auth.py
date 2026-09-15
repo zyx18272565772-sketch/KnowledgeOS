@@ -14,6 +14,8 @@ TOKEN_TTL_SECONDS = 8 * 60 * 60
 _sessions: dict[str, dict] = {}
 DEFAULT_ADMIN_USERNAME = os.getenv("DEFAULT_ADMIN_USERNAME", "admin").strip()
 DEFAULT_ADMIN_PASSWORD = os.getenv("DEFAULT_ADMIN_PASSWORD", "").strip()
+DEFAULT_DEMO_USERNAME = os.getenv("DEFAULT_DEMO_USERNAME", "agent").strip()
+DEFAULT_DEMO_PASSWORD = os.getenv("DEFAULT_DEMO_PASSWORD", "").strip()
 
 
 def _create_session(username: str, is_admin: bool) -> str:
@@ -73,23 +75,36 @@ def _ensure_table():
 
     with conn.cursor() as cur:
         cur.execute("SELECT id FROM users WHERE username = %s", (DEFAULT_ADMIN_USERNAME,))
-        if cur.fetchone():
-            return
+        admin_exists = cur.fetchone() is not None
 
-    if not DEFAULT_ADMIN_PASSWORD:
-        logger.warning(
-            "尚无初始管理员且未配置 DEFAULT_ADMIN_PASSWORD，已跳过创建"
-        )
-        return
+    if not admin_exists:
+        if DEFAULT_ADMIN_PASSWORD:
+            with conn.cursor() as cur:
+                h, s = _hash_password(DEFAULT_ADMIN_PASSWORD)
+                cur.execute(
+                    "INSERT INTO users (username, password_hash, salt, is_admin) VALUES (%s, %s, %s, %s)",
+                    (DEFAULT_ADMIN_USERNAME, h, s, 1)
+                )
+            conn.commit()
+            logger.info("已根据环境变量创建初始管理员：%s", DEFAULT_ADMIN_USERNAME)
+        else:
+            logger.warning("尚无初始管理员且未配置 DEFAULT_ADMIN_PASSWORD，已跳过创建")
 
-    with conn.cursor() as cur:
-        h, s = _hash_password(DEFAULT_ADMIN_PASSWORD)
-        cur.execute(
-            "INSERT INTO users (username, password_hash, salt, is_admin) VALUES (%s, %s, %s, %s)",
-            (DEFAULT_ADMIN_USERNAME, h, s, 1)
-        )
-    conn.commit()
-    logger.info("已根据环境变量创建初始管理员：%s", DEFAULT_ADMIN_USERNAME)
+    # 演示普通用户与管理员使用相同的初始化原则：只在账号不存在且明确配置密码时创建，
+    # 绝不覆盖已经存在的用户或修改其密码。
+    if DEFAULT_DEMO_USERNAME and DEFAULT_DEMO_PASSWORD:
+        with conn.cursor() as cur:
+            cur.execute("SELECT id FROM users WHERE username = %s", (DEFAULT_DEMO_USERNAME,))
+            demo_exists = cur.fetchone() is not None
+        if not demo_exists:
+            with conn.cursor() as cur:
+                h, s = _hash_password(DEFAULT_DEMO_PASSWORD)
+                cur.execute(
+                    "INSERT INTO users (username, password_hash, salt, is_admin) VALUES (%s, %s, %s, %s)",
+                    (DEFAULT_DEMO_USERNAME, h, s, 0)
+                )
+            conn.commit()
+            logger.info("已根据环境变量创建普通演示用户：%s", DEFAULT_DEMO_USERNAME)
 
 
 class RegisterRequest(BaseModel):

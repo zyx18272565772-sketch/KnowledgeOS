@@ -241,7 +241,9 @@ REDIS_PASSWORD=
 REDIS_DB=0
 
 DEFAULT_ADMIN_USERNAME=admin
-DEFAULT_ADMIN_PASSWORD=your-private-admin-password
+DEFAULT_ADMIN_PASSWORD=admin123
+DEFAULT_DEMO_USERNAME=agent
+DEFAULT_DEMO_PASSWORD=123456
 
 USE_MILVUS=false
 RERANKER_TYPE=simple
@@ -259,7 +261,16 @@ python main.py
 
 浏览器访问 http://127.0.0.1:8000。
 
-首次启动时，如果 `DEFAULT_ADMIN_PASSWORD` 非空且管理员账号尚不存在，系统会按环境变量创建初始管理员。源码和 README 不提供通用默认密码；已经存在的管理员账号不会被覆盖。
+首次启动时，如果演示账号尚不存在，系统会根据环境变量创建账号；已经存在的账号不会被覆盖，也不会被重置密码。
+
+本地作品演示可以使用：
+
+| 角色 | 用户名 | 密码 |
+|---|---|---|
+| 管理员 | `admin` | `admin123` |
+| 普通用户 | `agent` | `123456` |
+
+登录页也提供“管理员演示”和“普通用户演示”快捷按钮，可以自动填入对应账号。以上均为公开演示凭据，生产部署前必须修改或移除；真实 `.env`、DashScope Key 和数据库密码不要提交到 GitHub。
 
 ### 4. 运行单元测试
 

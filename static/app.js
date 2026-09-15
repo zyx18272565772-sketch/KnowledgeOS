@@ -99,11 +99,14 @@ function togglePassword() {
   document.getElementById('password-icon').setAttribute('data-lucide', input.type === 'password' ? 'eye' : 'eye-off');
   refreshIcons();
 }
-function fillDemoAccount() {
-  document.getElementById('login-user').value = 'admin';
-  document.getElementById('login-pass').value = '';
+function fillDemoAccount(role = 'admin') {
+  const account = role === 'user'
+    ? { username: 'agent', password: '123456' }
+    : { username: 'admin', password: 'admin123' };
+  document.getElementById('login-user').value = account.username;
+  document.getElementById('login-pass').value = account.password;
   document.getElementById('login-err').classList.add('hidden');
-  document.getElementById('login-pass').focus();
+  document.getElementById('login-submit').focus();
 }
 function logout() {
   saveSessions();

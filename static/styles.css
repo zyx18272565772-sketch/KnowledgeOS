@@ -114,10 +114,21 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .input-wrap input { min-width: 0; flex: 1; border: 0; outline: 0; padding: 10px 11px; background: transparent; color: #101828; }
 .input-action { margin-right: 4px; }
 .form-error { margin: -6px 0 0; border: 1px solid #fecdca; border-radius: 8px; background: #fef3f2; padding: 9px 11px; color: #b42318; font-size: 13px; font-weight: 500; }
-.login-hint { display: flex; align-items: center; gap: 8px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e4e7ec; color: #667085; font-size: 12px; }
-.login-hint svg { width: 16px; color: #12b76a; }
-.demo-account-button { margin-left: auto; border: 0; border-radius: 6px; background: transparent; padding: 4px 6px; color: #4338ca; font-size: 12px; font-weight: 600; cursor: pointer; }
-.demo-account-button:hover { background: #eef2ff; }
+.demo-accounts { margin-top: 24px; padding-top: 20px; border-top: 1px solid #e4e7ec; }
+.demo-accounts-head { margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.demo-accounts-head span { color: #344054; font-size: 13px; font-weight: 650; }
+.demo-accounts-head small { color: #98a2b3; font-size: 11px; }
+.demo-account-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.demo-account-card { min-width: 0; min-height: 68px; padding: 10px; border: 1px solid #e4e7ec; border-radius: 10px; display: grid; grid-template-columns: 30px minmax(0, 1fr) 14px; align-items: center; gap: 8px; color: #344054; background: #fff; text-align: left; cursor: pointer; transition: border-color .15s ease, background .15s ease, transform .15s ease; }
+.demo-account-card:hover { border-color: #a5b4fc; background: #f8f9ff; transform: translateY(-1px); }
+.demo-account-card > svg { width: 14px; color: #98a2b3; }
+.demo-account-icon { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: #4f46e5; background: #eef2ff; }
+.demo-account-icon svg { width: 15px; }
+.demo-account-card strong, .demo-account-card small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.demo-account-card strong { font-size: 12px; font-weight: 650; }
+.demo-account-card small { margin-top: 3px; color: #667085; font-size: 10px; }
+.login-hint { display: flex; align-items: flex-start; gap: 8px; margin-top: 13px; color: #667085; font-size: 11px; line-height: 1.55; }
+.login-hint svg { width: 14px; flex: 0 0 auto; margin-top: 1px; color: #667085; }
 
 /* Application shell */
 .app-frame { height: 100%; display: flex; background: var(--background); }

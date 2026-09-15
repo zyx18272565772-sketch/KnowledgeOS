@@ -34,7 +34,14 @@
             <button id="login-submit" type="submit" class="btn btn-primary btn-block">登录</button>
             <button type="button" onclick="doRegister()" class="btn btn-secondary btn-block">注册普通账号</button>
           </form>
-          <div class="login-hint"><i data-lucide="shield-check"></i><span>首次运行请先在环境变量中配置管理员密码。</span><button type="button" onclick="fillDemoAccount()" class="demo-account-button">填写管理员账号</button></div>
+          <section class="demo-accounts" aria-labelledby="demo-accounts-title">
+            <div class="demo-accounts-head"><span id="demo-accounts-title">演示账号</span><small>点击后自动填入，可直接登录</small></div>
+            <div class="demo-account-grid">
+              <button type="button" onclick="fillDemoAccount('admin')" class="demo-account-card"><span class="demo-account-icon"><i data-lucide="shield-check"></i></span><span><strong>管理员演示</strong><small>查看知识审核与系统管理</small></span><i data-lucide="arrow-up-right"></i></button>
+              <button type="button" onclick="fillDemoAccount('user')" class="demo-account-card"><span class="demo-account-icon"><i data-lucide="user-round"></i></span><span><strong>普通用户演示</strong><small>体验知识问答与会话</small></span><i data-lucide="arrow-up-right"></i></button>
+            </div>
+          </section>
+          <div class="login-hint"><i data-lucide="info"></i><span>演示凭据仅用于本地作品展示，生产部署请立即更换。</span></div>
         </div>
       </section>
     </div>
