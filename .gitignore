@@ -1,0 +1,62 @@
+# Environment variables and local secrets
+.env
+**/.env
+!.env.example
+!**/.env.example
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python caches and test artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE and local assistant settings
+.idea/
+.vscode/
+.claude/
+
+# Logs and temporary files
+*.log
+temp/
+python-service/temp/
+
+# Runtime uploads and pending review vectors
+python-service/uploads/
+python-service/pending_vectors/
+
+# Generated vector indexes and backups
+python-service/faiss_index/
+python-service/faiss_index_backup/
+
+# Generated evaluation output (keep the curated summary report)
+python-service/evaluation/results/
+
+# Local OCR language model files; install Tesseract separately
+python-service/tessdata/
+
+# Local databases and serialized runtime data
+*.db
+*.sqlite
+*.sqlite3
+*.pkl
+*.faiss
+*.npz
+
+# Build and package artifacts
+build/
+dist/
+*.egg-info/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini

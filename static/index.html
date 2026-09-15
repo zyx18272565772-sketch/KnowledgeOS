@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="企业内部知识库与 AI Agent 管理平台">
+  <title>KnowledgeOS · 企业智能知识平台</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github-dark.min.css">
+  <link rel="stylesheet" href="/static/styles.css?v=20260915">
+</head>
+<body>
+  <div id="login-screen" class="login-screen">
+    <div class="login-shell">
+      <section class="login-brand-panel" aria-label="产品介绍">
+        <div class="brand-lockup brand-lockup-light"><span class="brand-mark"><i data-lucide="blocks"></i></span><span><strong>KnowledgeOS</strong><small>企业智能知识平台</small></span></div>
+        <div class="login-brand-copy"><span class="eyebrow">ENTERPRISE AI WORKSPACE</span><h1>让企业知识可靠地进入每一次智能决策</h1><p>统一管理知识发布、质量巡检与 Agent 问答，确保每条线上知识经过审核且可追溯。</p></div>
+        <div class="lifecycle-list">
+          <div><span>01</span><p><strong>受控发布</strong><small>新知识先巡检，审核后进入线上检索</small></p></div>
+          <div><span>02</span><p><strong>规则治理</strong><small>识别语义重复、规则冲突与质量问题</small></p></div>
+          <div><span>03</span><p><strong>可信问答</strong><small>回答基于企业知识并保留来源证据</small></p></div>
+        </div>
+      </section>
+      <section class="login-form-panel">
+        <div class="login-card">
+          <div class="login-mobile-brand"><span class="brand-mark"><i data-lucide="blocks"></i></span><strong>KnowledgeOS</strong></div>
+          <div class="login-heading"><h2>登录工作台</h2><p>使用企业账号访问知识与 Agent 服务</p></div>
+          <form id="login-form" class="form-stack">
+            <label class="field"><span>用户名</span><div class="input-wrap"><i data-lucide="user"></i><input id="login-user" autocomplete="username" placeholder="请输入用户名" autofocus></div></label>
+            <label class="field"><span>密码</span><div class="input-wrap"><i data-lucide="lock-keyhole"></i><input id="login-pass" type="password" autocomplete="current-password" placeholder="请输入密码"><button class="icon-button input-action" type="button" onclick="togglePassword()" aria-label="显示或隐藏密码"><i id="password-icon" data-lucide="eye"></i></button></div></label>
+            <p id="login-err" class="form-error hidden" role="alert"></p>
+            <button id="login-submit" type="submit" class="btn btn-primary btn-block">登录</button>
+            <button type="button" onclick="doRegister()" class="btn btn-secondary btn-block">注册普通账号</button>
+          </form>
+          <div class="login-hint"><i data-lucide="shield-check"></i><span>首次运行请先在环境变量中配置管理员密码。</span><button type="button" onclick="fillDemoAccount()" class="demo-account-button">填写管理员账号</button></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="app" class="app-frame hidden">
+    <div id="sidebar-backdrop" class="sidebar-backdrop hidden" onclick="closeMobileSidebar()"></div>
+    <aside id="app-sidebar" class="app-sidebar">
+      <div class="sidebar-brand">
+        <button class="brand-lockup" onclick="switchView(state.isAdmin?'dashboard':'chat')" aria-label="返回首页"><span class="brand-mark"><i data-lucide="blocks"></i></span><span class="brand-copy"><strong>KnowledgeOS</strong><small>企业智能知识平台</small></span></button>
+        <button id="sidebar-toggle" class="icon-button sidebar-collapse" onclick="toggleSidebar()" aria-label="收起侧栏" aria-expanded="true" title="收起侧栏" data-tooltip="收起侧栏" data-tooltip-side="right"><i data-lucide="panel-left-close"></i></button>
+      </div>
+      <div class="sidebar-scroll">
+        <nav class="sidebar-nav" aria-label="主导航">
+          <div class="nav-group"><div class="nav-group-label">工作台</div><button class="nav-item admin-nav hidden" data-view="dashboard" data-sidebar-label="仪表盘" onclick="switchView('dashboard')"><i data-lucide="layout-dashboard"></i><span>仪表盘</span></button><button class="nav-item" data-view="chat" data-sidebar-label="智能问答" onclick="switchView('chat')"><i data-lucide="message-square-text"></i><span>智能问答</span></button></div>
+          <div class="conversation-panel"><div class="conversation-heading"><span>最近对话</span><button class="icon-button" onclick="newChat()" title="新建对话" aria-label="新建对话"><i data-lucide="square-pen"></i></button></div><div class="sidebar-search"><i data-lucide="search"></i><input id="session-search" aria-label="搜索历史对话" oninput="renderSessions()" placeholder="搜索对话"></div><div id="session-list" class="session-list"></div></div>
+          <div class="nav-group admin-nav hidden"><div class="nav-group-label">知识与 Agent</div><button class="nav-item" data-view="kb" data-sidebar-label="知识库管理" onclick="switchView('kb')"><i data-lucide="library-big"></i><span>知识库管理</span></button><button class="nav-item" data-view="agent-runs" data-sidebar-label="Agent 执行记录" onclick="switchView('agent-runs')"><i data-lucide="activity"></i><span>Agent 执行记录</span></button><button class="nav-item" data-view="report" data-sidebar-label="自动报表" onclick="switchView('report')"><i data-lucide="chart-no-axes-combined"></i><span>自动报表</span></button></div>
+          <div class="nav-group admin-nav hidden"><div class="nav-group-label">系统管理</div><button class="nav-item" data-view="users" data-sidebar-label="用户管理" onclick="switchView('users')"><i data-lucide="users-round"></i><span>用户管理</span></button></div>
+        </nav>
+      </div>
+      <footer class="sidebar-footer"><button id="theme-btn" onclick="toggleTheme()" class="nav-item"><i data-lucide="moon"></i><span>深色模式</span></button><div class="account-card"><span class="avatar" id="current-user-avatar">A</span><span class="account-copy"><strong id="current-user"></strong><small id="current-role">普通用户</small></span><button class="icon-button" onclick="logout()" aria-label="退出登录" data-tooltip="退出登录" data-tooltip-side="top"><i data-lucide="log-out"></i></button></div></footer>
+    </aside>
+
+    <section class="app-main">
+      <header class="topbar"><div class="topbar-leading"><button class="icon-button mobile-menu" onclick="openMobileSidebar()" aria-label="打开导航"><i data-lucide="menu"></i></button><div><div id="page-breadcrumb" class="breadcrumb">工作台</div><h1 id="page-title">智能问答</h1><p id="page-subtitle">基于企业知识库提供可追溯的智能问答</p></div></div><div id="page-actions" class="topbar-actions"></div></header>
+      <main class="view-host">
+        <section id="chat-view" class="view-panel chat-view">
+          <div id="chat-messages" class="chat-messages"><div id="welcome" class="chat-welcome"><div class="assistant-orb"><i data-lucide="sparkles"></i></div><span class="status-pill status-success"><span></span>知识库已连接</span><h2>今天想查询什么？</h2><p>查询企业制度、分析复杂场景，或上传附件获得处理建议。</p><div class="prompt-grid"><button onclick="quickAsk('售后退款有什么规则？')"><i data-lucide="receipt-text"></i><span><strong>查询售后规则</strong><small>了解退款、退货与处理时限</small></span><i data-lucide="arrow-up-right"></i></button><button onclick="quickAsk('对比不同退款场景的处理方案')"><i data-lucide="git-compare-arrows"></i><span><strong>对比处理方案</strong><small>拆解复杂问题并给出依据</small></span><i data-lucide="arrow-up-right"></i></button><button onclick="quickAsk('知识库中有哪些企业制度？')"><i data-lucide="book-open-text"></i><span><strong>浏览企业制度</strong><small>定位当前已发布的知识</small></span><i data-lucide="arrow-up-right"></i></button></div></div></div>
+          <div class="chat-composer-shell"><div class="chat-composer"><div id="attach-bar" class="attachment-bar"></div><div class="composer-row"><label class="icon-button composer-attach" aria-label="上传附件到当前对话" data-tooltip="上传附件"><i data-lucide="paperclip"></i><input type="file" id="file-upload" accept=".pdf,.docx,.txt,.md,.png,.jpg,.jpeg,.gif,.bmp,.tiff,.tif" onchange="uploadFile(this)" class="hidden" multiple></label><textarea id="chat-input" aria-label="输入问题" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}" placeholder="输入问题，或粘贴一张需要分析的截图"></textarea><button id="send-button" onclick="send()" class="btn btn-primary send-button" aria-label="发送问题"><i data-lucide="arrow-up"></i><span>发送</span></button></div><div class="composer-meta"><span>Enter 发送 · Shift + Enter 换行</span><button onclick="clearCurrentChat()" class="btn btn-ghost btn-xs composer-clear" aria-label="清空当前会话">清空会话</button></div></div></div>
+        </section>
+
+        <section id="dashboard-view" class="view-panel page-scroll hidden"><div class="page-container"><div id="stats-cards" class="stats-grid stats-grid-four"></div><div class="dashboard-grid"><article class="panel panel-span-2"><div class="panel-header"><div><h2>Agent 请求概览</h2><p>当前进程内各任务类型的真实调用统计</p></div><span class="status-pill status-neutral">实时汇总</span></div><div id="agent-stats" class="panel-body"></div></article><article class="panel"><div class="panel-header"><div><h2>知识库状态</h2><p>发布与审核状态分布</p></div></div><div id="knowledge-distribution" class="panel-body"></div></article><article class="panel"><div class="panel-header"><div><h2>活跃对话</h2><p>按消息数量展示当前账号会话</p></div></div><div id="active-chats" class="panel-body"></div></article><article class="panel panel-span-2"><div class="panel-header"><div><h2>知识治理概况</h2><p>待审核文档及当前待处理风险</p></div><button class="btn btn-ghost btn-sm" onclick="switchView('kb')">进入知识库<i data-lucide="arrow-right"></i></button></div><div id="governance-overview" class="panel-body"></div></article></div></div></section>
+
+        <section id="users-view" class="view-panel page-scroll hidden"><div class="page-container"><div id="user-stats" class="stats-grid stats-grid-four"></div><article class="panel table-panel"><div class="table-toolbar"><div class="toolbar-search"><i data-lucide="search"></i><input id="user-search" oninput="renderUsers()" placeholder="搜索用户名"></div><button onclick="loadUsers()" class="btn btn-secondary btn-sm"><i data-lucide="refresh-cw"></i>刷新</button></div><div class="table-scroll"><table class="data-table"><thead><tr><th>用户</th><th>角色</th><th>账号状态</th><th>创建时间</th><th>最近登录</th></tr></thead><tbody id="users-list"></tbody></table></div><div id="users-pagination" class="table-footer"><span>正在加载用户</span></div></article></div></section>
+
+        <section id="kb-view" class="view-panel page-scroll hidden"><div class="page-container"><div class="governance-note"><i data-lucide="shield-check"></i><div><strong>知识发布受审核流程保护</strong><p>巡检完成不代表已发布。只有管理员点击“通过并发布”后，新知识才会进入线上 FAISS。</p></div></div><div id="kb-stats" class="stats-grid stats-grid-four"></div><div class="tabs-shell"><div id="kb-tabs" class="tabs"></div></div><div id="kb-content" class="content-stack"></div></div><input type="file" id="kb-upload" accept=".pdf,.docx,.txt,.md" onchange="uploadToKB(this)" class="hidden" multiple></section>
+
+        <section id="agent-runs-view" class="view-panel page-scroll hidden"><div class="page-container"><div class="scope-notice"><i data-lucide="info"></i><span>当前后端提供任务级聚合统计，尚未保存逐次运行明细。页面仅展示真实可用数据。</span></div><article class="panel table-panel"><div class="table-toolbar"><div class="toolbar-filters"><label><span>任务类型</span><input id="run-user-filter" oninput="renderAgentRuns()" placeholder="筛选任务类型"></label><label><span>运行结果</span><select id="run-status-filter" onchange="renderAgentRuns()"><option value="">全部</option><option value="success">无失败</option><option value="failed">存在失败</option></select></label></div><div class="toolbar-actions"><button onclick="resetRunFilter()" class="btn btn-ghost btn-sm">重置</button><button onclick="loadAgentRuns()" class="btn btn-secondary btn-sm"><i data-lucide="refresh-cw"></i>刷新</button></div></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Agent / 任务</th><th>调用次数</th><th>成功</th><th>失败</th><th>成功率</th><th>平均耗时</th><th></th></tr></thead><tbody id="agent-runs-list"></tbody></table></div></article></div></section>
+
+        <section id="report-view" class="view-panel page-scroll hidden"><div class="page-container"><div id="report-overview" class="stats-grid stats-grid-four"></div><div class="report-grid"><article class="panel panel-span-2"><div class="panel-header"><div><h2>Agent 使用情况</h2><p>按任务类型汇总调用质量</p></div></div><div id="report-agent-stats" class="panel-body"></div></article><article class="panel"><div class="panel-header"><div><h2>报告说明</h2><p>当前报表范围与数据来源</p></div></div><div class="panel-body report-note"><i data-lucide="file-check-2"></i><h3>实时运营汇总</h3><p>数据来自当前 Agent 进程统计、MySQL 文档记录和正式向量索引，不生成虚假的日报或趋势。</p><span id="report-generated-at"></span></div></article></div></div></section>
+      </main>
+    </section>
+  </div>
+
+  <div id="inspection-drawer" class="drawer-root hidden" aria-hidden="true"><div class="drawer-backdrop" onclick="closeInspectionDrawer()"></div><aside class="drawer-panel inspection-drawer" role="dialog" aria-modal="true" aria-labelledby="inspection-title"><header class="drawer-header"><div><span class="eyebrow">KNOWLEDGE GOVERNANCE</span><h2 id="inspection-title">巡检报告</h2><p id="inspection-drawer-subtitle"></p></div><button onclick="closeInspectionDrawer()" class="icon-button" aria-label="关闭"><i data-lucide="x"></i></button></header><div id="inspection-drawer-content" class="drawer-content"></div><footer id="inspection-drawer-actions" class="drawer-footer"></footer></aside></div>
+  <div id="detail-drawer" class="drawer-root hidden" aria-hidden="true"><div class="drawer-backdrop" onclick="closeDetailDrawer()"></div><aside class="drawer-panel compact-drawer" role="dialog" aria-modal="true"><header class="drawer-header"><div><span id="detail-drawer-eyebrow" class="eyebrow">AGENT OBSERVABILITY</span><h2 id="detail-drawer-title">任务统计详情</h2><p id="detail-drawer-subtitle"></p></div><button onclick="closeDetailDrawer()" class="icon-button" aria-label="关闭"><i data-lucide="x"></i></button></header><div id="detail-drawer-content" class="drawer-content"></div></aside></div>
+
+  <div id="reject-modal" class="modal-root hidden" aria-hidden="true"><div class="modal-backdrop" onclick="closeRejectModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="reject-title"><div class="modal-icon modal-icon-danger"><i data-lucide="file-x-2"></i></div><h2 id="reject-title">驳回文档</h2><p>该文档不会进入正式知识库，可填写原因供后续治理参考。</p><label class="field"><span>驳回原因（可选）</span><textarea id="reject-reason" rows="3" maxlength="500" placeholder="例如：规则与现行制度冲突，请确认后重新上传"></textarea></label><div class="modal-actions"><button onclick="closeRejectModal()" class="btn btn-secondary">取消</button><button id="confirm-reject-btn" onclick="confirmReject()" class="btn btn-danger">确认驳回</button></div></section></div>
+  <div id="confirm-modal" class="modal-root hidden" aria-hidden="true"><div class="modal-backdrop"></div><section class="modal-card" role="dialog" aria-modal="true"><div id="confirm-icon" class="modal-icon"><i data-lucide="circle-alert"></i></div><h2 id="confirm-title">确认操作</h2><p id="confirm-message"></p><div class="modal-actions"><button id="confirm-cancel" class="btn btn-secondary">取消</button><button id="confirm-ok" class="btn btn-primary">确认</button></div></section></div>
+  <div id="user-modal" class="modal-root hidden" aria-hidden="true"><div class="modal-backdrop" onclick="closeUserModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="user-modal-title"><div class="modal-icon"><i data-lucide="user-plus"></i></div><h2 id="user-modal-title">新增普通用户</h2><p>当前接口仅支持创建普通账号，管理员角色需要在数据库中配置。</p><form onsubmit="event.preventDefault();createUser()"><div class="form-stack"><label class="field"><span>用户名</span><input id="new-user-name" autocomplete="username" placeholder="至少 2 个字符"></label><label class="field"><span>初始密码</span><input id="new-user-pass" type="password" autocomplete="new-password" placeholder="至少 3 个字符"></label></div><div class="modal-actions"><button type="button" onclick="closeUserModal()" class="btn btn-secondary">取消</button><button id="create-user-btn" type="submit" class="btn btn-primary">创建用户</button></div></form></section></div>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+  <script src="/static/ui.js?v=20260914"></script>
+  <script src="/static/app.js?v=20260915"></script>
+</body>
+</html>
