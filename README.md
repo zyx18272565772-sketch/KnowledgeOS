@@ -3,6 +3,21 @@
 基于 **FastAPI、LangChain、FAISS、MySQL 和 Redis** 实现的企业内部知识问答与知识治理系统。普通聊天由 RouterAgent 识别意图和问题复杂度，再路由到闲聊、知识问答或深度推理工作流；知识问答采用固定、可控的 Planner–Orchestrator–Executor 编排。知识巡检不由普通聊天触发，而是作为新知识发布前的质量关卡。
 
 > 当前项目已建立30条人工标注的检索评测集，用于比较FAISS直接检索与候选召回后重排序的效果；路由准确率和答案生成质量尚未建立正式评测集。
+
+## 界面预览
+
+### 登录主页面
+
+![KnowledgeOS 登录主页面](docs/images/login.png)
+
+### 管理员工作台
+
+![KnowledgeOS 管理员工作台](docs/images/admin-dashboard.png)
+
+### 普通用户智能问答
+
+![KnowledgeOS 普通用户智能问答](docs/images/user-chat.png)
+
 ## 核心能力
 
 - LLM 意图分类，失败时使用关键词规则降级。
