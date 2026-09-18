@@ -1,0 +1,30 @@
+.git
+.gitattributes
+.venv
+.idea
+.claude
+.pytest_cache
+docs
+temp
+__pycache__
+**/__pycache__
+*.py[cod]
+**/*.py[cod]
+
+# 敏感配置：运行时通过 compose env_file 注入，绝不进镜像
+.env
+**/.env
+
+# 运行时产物，容器内由 volume 挂载
+python-service/uploads
+python-service/faiss_index
+python-service/faiss_index_backup
+python-service/pending_vectors
+python-service/temp
+python-service/evaluation/results
+python-service/tessdata
+*.db
+*.sqlite
+*.sqlite3
+*.faiss
+*.npz

@@ -28,7 +28,7 @@ class LLMService:
             # 用 ChatOpenAI 而不是 Tongyi：Tongyi 请求 dashscope 原生端点会触发
             # AllocationQuota.FreeTierOnly 被拒；OpenAI 兼容端点走付费/正常额度可通
             self.llm = ChatOpenAI(
-                model="qwen3.8-max",
+                model="deepseek-v4.1-flash",
                 api_key=api_key,
                 base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
                 streaming=True,  # 启用流式输出
