@@ -195,7 +195,54 @@ InspectionAgent：新知识与 ACTIVE FAISS 比较
 
 ## 快速开始
 
-### 环境要求
+### 方式一：Docker 部署（推荐）
+
+本机不需要安装 Python、MySQL 和 Redis，一条命令拉起完整环境。镜像内已包含 Tesseract OCR（含中文语言包）和本地 Embedding 模型，容器启动后不再需要访问外网下载模型。
+
+~~~powershell
+docker compose up -d
+~~~
+
+浏览器访问 http://localhost:8001。
+
+容器组成与数据持久化：
+
+| 服务 | 说明 | 数据卷 |
+|---|---|---|
+| app | FastAPI 应用与静态前端 | `faiss_index`、`pending_vectors`、`uploads`、`app_temp` |
+| mysql | MySQL 8.0（utf8mb4，东八区） | `mysql_data` |
+| redis | Redis 7（开启 AOF 持久化） | `redis_data` |
+
+首次启动时数据表和初始账号会自动创建，账号规则与本地运行一致，同样不会覆盖已存在的用户。
+
+宿主机端口默认是 8001（本机 8000 可能已被其他项目占用）。需要换成别的端口时：
+
+~~~powershell
+$env:APP_PORT=8000; docker compose up -d
+~~~
+
+环境变量读取自 `python-service/.env`，与本地运行共用同一份。compose 会覆盖其中不适用于容器的值（`API_HOST`、`MYSQL_HOST`、`REDIS_HOST`、`TESSERACT_PATH`），所以 `.env` 里填 `localhost` 也能正常工作。MySQL 密码默认是 `ai_knowledge_root`，可覆盖：
+
+~~~powershell
+$env:MYSQL_ROOT_PASSWORD="your-password"; docker compose up -d
+~~~
+
+常用命令：
+
+~~~powershell
+docker compose ps           # 查看容器状态
+docker compose logs -f app  # 查看应用日志
+docker compose down         # 停止并保留数据
+docker compose down -v      # 停止并清空所有数据卷
+~~~
+
+首次构建需要下载 PyTorch、依赖和 Embedding 模型，耗时较长；之后 `up -d` 都是秒级启动。
+
+> `docker-compose.yml` 中的初始账号和数据库密码默认值对齐了下方公开的演示凭据，生产部署前必须改掉。
+
+### 方式二：本地运行
+
+#### 环境要求
 
 - Python 3.10+
 - MySQL 8.0+
@@ -203,7 +250,7 @@ InspectionAgent：新知识与 ACTIVE FAISS 比较
 - 阿里云 DashScope API Key（如改用本地 Embedding，LLM 功能仍需模型配置）
 - Tesseract OCR（仅在需要识别聊天截图时安装）
 
-### 1. 安装依赖
+#### 1. 安装依赖
 
 ~~~powershell
 cd python-service
@@ -218,7 +265,7 @@ pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ~~~
 
-### 2. 配置环境变量
+#### 2. 配置环境变量
 
 ~~~powershell
 Copy-Item .env.example .env
@@ -252,7 +299,7 @@ REASONING_TOP_K=3
 RETRIEVAL_CANDIDATE_MULTIPLIER=3
 ~~~
 
-### 3. 启动服务
+#### 3. 启动服务
 
 ~~~powershell
 cd python-service
@@ -272,14 +319,14 @@ python main.py
 
 登录页也提供“管理员演示”和“普通用户演示”快捷按钮，可以自动填入对应账号。以上均为公开演示凭据，生产部署前必须修改或移除；真实 `.env`、DashScope Key 和数据库密码不要提交到 GitHub。
 
-### 4. 运行单元测试
+#### 4. 运行单元测试
 
 ~~~powershell
 cd python-service
 pytest -q
 ~~~
 
-### 5. 运行检索结果评测
+#### 5. 运行检索结果评测
 
 项目提供30条人工标注问题，只评价检索结果，不调用最终答案生成模型：
 
@@ -344,6 +391,9 @@ my agent/
 │  ├─ styles.css               # KnowledgeOS 统一视觉样式
 │  ├─ app.js                   # 页面交互、权限与 SSE 渲染
 │  └─ favicon.svg              # 产品图标
+├─ Dockerfile                  # 应用镜像：内置 Tesseract OCR 与本地 Embedding 模型
+├─ docker-compose.yml          # app + MySQL + Redis 一键编排
+├─ .dockerignore
 └─ README.md
 ~~~
 
